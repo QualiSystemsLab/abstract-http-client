@@ -1,10 +1,10 @@
 """
 Generic implementation of working with Requests session object to make requests and validate responses
 """
-import urllib3
 import logging
 
 import requests
+import urllib3
 from requests import Request, Response
 from requests.models import HTTPError
 
@@ -20,8 +20,15 @@ class RestClientUnauthorizedException(RestClientException):
 
 
 class RequestService:
-    def __init__(self, host: str, port: int = None, logger: logging.Logger = None, use_https=False, ssl_verify=False,
-                 proxies: dict = None):
+    def __init__(
+        self,
+        host: str,
+        port: int = None,
+        logger: logging.Logger = None,
+        use_https=False,
+        ssl_verify=False,
+        proxies: dict = None,
+    ):
         self._host = host
         self._port = port
         self._use_https = use_https
@@ -52,7 +59,7 @@ class RequestService:
 
     def _build_url(self, uri: str):
         """
-        support passing FULL url or just URI.
+        Support passing FULL url or just URI.
         Example - http://{hostname}:{port}/{uri}
         Also allows passing URI as "/endpoint" OR "endpoint"
         """
@@ -60,11 +67,11 @@ class RequestService:
             return uri
 
         # support passing uri with or without "/"
-        if not uri.startswith('/'):
-            uri = '/' + uri
+        if not uri.startswith("/"):
+            uri = "/" + uri
 
         protocol = "https" if self._use_https else "http"
-        url = f'{protocol}://{self._host}'
+        url = f"{protocol}://{self._host}"
         if self._port:
             url += f":{self._port}"
         url += uri
@@ -76,16 +83,17 @@ class RequestService:
             response.raise_for_status()
         except HTTPError as e:
             if response.status_code == 401:
-                raise RestClientUnauthorizedException(f"Failed Authentication. {str(e)}")
-            raise RestClientException(f"Failed Request. {str(e)}")
+                raise RestClientUnauthorizedException(f"Failed Authentication. {str(e)}") from e
+            raise RestClientException(f"Failed Request. {str(e)}") from e
         return response
 
     def _debug_log(self, message: str):
         if self._logger:
             self._logger.debug(message)
 
-    def _send_request(self, http_verb: str, uri: str, data: dict = None, headers: dict = None, params: dict = None,
-                      files: dict = None):
+    def _send_request(
+        self, http_verb: str, uri: str, data: dict = None, headers: dict = None, params: dict = None, files: dict = None
+    ):
         """
         Central method to build and send request
 
@@ -132,7 +140,7 @@ class RequestService:
 
     def request_post_files(self, uri: str, data: dict, files: dict, headers: dict = None, params: dict = None) -> Response:
         """
-        send files example - https://stackoverflow.com/a/22567429
+        Send files example - https://stackoverflow.com/a/22567429
         """
         return self._send_request("POST", uri, data, headers, params, files)
 

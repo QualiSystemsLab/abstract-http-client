@@ -1,10 +1,7 @@
 """
 Test api against JSON placeholder mock online api
 """
-import pytest
 from common import *
-from constants import *
-from json_placeholder_client import JsonPlaceholderApiClient
 
 
 def test_post(api_client):

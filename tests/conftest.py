@@ -1,5 +1,3 @@
-import time
-
 import pytest
 from constants import *
 from json_placeholder_client import JsonPlaceholderApiClient

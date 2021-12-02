@@ -1,17 +1,28 @@
 """
 Abstract Base Class for rest api implementations (don't instantiate directly)
 """
-from abc import ABC, abstractmethod
 import logging
+from abc import ABC, abstractmethod
 
 from abstract_requests_client.requests_service import RequestService
 
 
 class AbstractRequestsClient(ABC):
+    """ Inherit from this class to start writing your generic api """
 
     @abstractmethod
-    def __init__(self, host, username="", password="", token="", logger: logging.Logger = None, port: int = None,
-                 use_https=False, ssl_verify=False, proxies: dict = None):
+    def __init__(
+        self,
+        host,
+        username="",
+        password="",
+        token="",
+        logger: logging.Logger = None,
+        port: int = None,
+        use_https=False,
+        ssl_verify=False,
+        proxies: dict = None,
+    ):
         self._rest_service = RequestService(host, port, logger, use_https, ssl_verify, proxies)
         self._logger = logger
         self._username = username
@@ -44,13 +55,13 @@ class AbstractRequestsClient(ABC):
 
     def __enter__(self):
         """
-        this method can be over-ridden for additional functionality
+        This method can be over-ridden for additional functionality
         """
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """
-        do api clean up
+        Do api clean up
         """
         self._logout()
 
