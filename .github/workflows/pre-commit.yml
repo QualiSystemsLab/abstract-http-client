@@ -15,5 +15,5 @@ jobs:
       with:
         python-version: 3.7
     - name: install dev dependencies
-      run: pip3 install -U requirements-dev.txt
+      run: pip3 install -U -r requirements-dev.txt
     - uses: pre-commit/action@v2.0.3
