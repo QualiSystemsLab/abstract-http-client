@@ -64,4 +64,3 @@ class AbstractRequestsClient(ABC):
         Do api clean up
         """
         self._logout()
-
