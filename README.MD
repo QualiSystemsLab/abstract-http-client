@@ -121,6 +121,6 @@ class AbstractRequestsClient(ABC):
 - you can access the requests session directly from the requests service if needed
 - All methods run the requests, perform validation on response, then return the Response object.
     - It's up to your use case what to do with response (response.json(), response.text, etc.)
-- Abstract class optionally expects to implement login and logout methods, which are called in context manager methods.
+- Abstract class optionally expects to implement login and logout methods.
 
 
