@@ -34,11 +34,45 @@ class JsonPlaceholderApiClient(AbstractRequestsClient):
     def add_post(self):
         return self.rest_service.request_post("/posts", data={"post": "my_post"})
 
+# note use of context manager to trigger login / logout actions
 with JsonPlaceholderApiClient(host="jsonplaceholder.typicode.com") as api:
     users = api.get_users()
     print(users)
     print(f"total requests sent {api.rest_service.request_counter}")
     
+```
+
+- The full base init ships with a lot more optional parameters, as seen in the base class 
+- Extensions define their own signature and pass only what is needed to super call of base
+```python
+import logging
+from abc import ABC, abstractmethod
+
+from abstract_requests_client.requests_service import RequestService
+
+
+class AbstractRequestsClient(ABC):
+    """ Inherit from this class to start writing your generic api """
+
+    @abstractmethod
+    def __init__(
+        self,
+        host,
+        username="",
+        password="",
+        token="",
+        logger: logging.Logger = None,
+        port: int = None,
+        use_https=False,
+        ssl_verify=False,
+        proxies: dict = None,
+    ):
+        self._rest_service = RequestService(host, port, logger, use_https, ssl_verify, proxies)
+        self._logger = logger
+        self._username = username
+        self._password = password
+        self._token = token
+
 ```
 
 ## Usage Notes
