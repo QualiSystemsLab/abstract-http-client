@@ -8,7 +8,7 @@ from abstract_requests_client.requests_service import RequestService
 
 
 class AbstractRequestsClient(ABC):
-    """ Inherit from this class to start writing api client """
+    """ Inherit from this class to start writing aapi client """
 
     @abstractmethod
     def __init__(
