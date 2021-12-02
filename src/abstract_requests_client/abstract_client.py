@@ -65,5 +65,3 @@ class AbstractRequestsClient(ABC):
         """
         self._logout()
 
-    def __del__(self):
-        self._logout()
