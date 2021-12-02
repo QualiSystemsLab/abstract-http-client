@@ -1,4 +1,5 @@
 [![Python 3.7](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/release/python/)
+[![pre-commit-ci](https://github.com/QualiSystemsLab/abstract-requests-client/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/QualiSystemsLab/abstract-requests-client/actions/workflows/pre-commit.yml)
 
 # Abstract Requests Client
 This project is a starting template for a REST api wrapper class, encapsulating the popular [requests](https://docs.python-requests.org/en/latest/) libary.
