@@ -5,9 +5,6 @@ class JsonPlaceholderApiClient(AbstractRequestsClient):
     def __init__(self, host):
         super().__init__(host=host, use_https=True)
 
-    def get_users(self):
-        return self.rest_service.request_get(uri="/users").json()
-
     def get_posts(self):
         return self.rest_service.request_get("/posts").json()
 
