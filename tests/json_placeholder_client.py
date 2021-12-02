@@ -1,0 +1,21 @@
+from abstract_requests_client.abstract_client import AbstractRequestsClient
+
+
+class JsonPlaceholderApiClient(AbstractRequestsClient):
+    def __init__(self, host):
+        super().__init__(host=host, use_https=True)
+
+    def get_users(self):
+        return self.rest_service.request_get(uri="/users").json()
+
+    def get_posts(self):
+        return self.rest_service.request_get("/posts").json()
+
+    def add_post(self):
+        return self.rest_service.request_post("/posts", data={"post": "my_post"})
+
+    def edit_post(self):
+        return self.rest_service.request_put("/posts/1")
+
+    def delete_post(self):
+        return self.rest_service.request_delete("/posts/1")
