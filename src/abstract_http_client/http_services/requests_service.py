@@ -1,12 +1,16 @@
 """
-Generic implementation of working with Requests session object to make requests and validate responses
+An abstraction on top of the requests library. This class provides the following convenience features
+- thin wrapper commands around the 4 main HTTP requests (GET, POST, PUT, DELETE)
+- session setup, all requests made by session object
+- A request counter attribute tracking the number of requests made per instance session
+- debug logging on every step of request build
+- validation of each request before return
 
 Recommended to work with session object, but can work on a per request basis as well
 """
 import logging
 from typing import Tuple, Union
 
-import urllib3
 from requests import Request, Response, Session
 from requests.models import HTTPBasicAuth, HTTPError
 
@@ -14,7 +18,6 @@ from abstract_http_client.constants import HttpVerbs
 from abstract_http_client.exceptions import *
 from abstract_http_client.http_services.http_service_base import HttpServiceBase
 
-ignored_warnings = [urllib3.exceptions.InsecureRequestWarning]
 auth_type = Union[HTTPBasicAuth, Tuple[str, str]]
 
 
@@ -24,11 +27,12 @@ class RequestsService(HttpServiceBase):
         host: str,
         port: int = None,
         logger: logging.Logger = None,
-        use_https=False,
-        ssl_verify=False,
+        use_https=True,
+        ssl_verify=True,
         proxies: dict = None,
+        insecure_warning=True,
     ):
-        super().__init__(host, port, logger, use_https, ignored_warnings)
+        super().__init__(host, port, logger, use_https, insecure_warning)
         self._session = Session()
         self._configure_session_settings(proxies, ssl_verify)
 

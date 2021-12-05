@@ -22,10 +22,10 @@ pip install abstract-requests-client
 - Sample implementation of api client that has no auth
 
 ```python
-from abstract_http_client.http_clients.requests_client import AbstractRequestsClient
+from abstract_http_client.http_clients.requests_client import RequestsClient
 
 
-class JsonPlaceholderApiClient(AbstractRequestsClient):
+class JsonPlaceholderApiClient(RequestsClient):
   def __init__(self, host):
     super().__init__(host=host, use_https=True)
 
@@ -53,10 +53,10 @@ if __name__ == "__main__":
 - Login not in __enter__ by default, can be added if prefer to have context manager trigger login. Or just put into __init__
 
 ```python
-from abstract_http_client.http_clients.requests_client import AbstractRequestsClient
+from abstract_http_client.http_clients.requests_client import RequestsClient
 
 
-class SampleAuthClient(AbstractRequestsClient):
+class SampleAuthClient(RequestsClient):
   def __init__(self, host, user, password):
     super().__init__(host=host, username=user, password=password)
     self.login()

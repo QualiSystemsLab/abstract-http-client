@@ -1,5 +1,6 @@
 """
-ABC that defines the context manager behavior
+ABC that defines the context manager behavior and stores base attributes
+Not meant to be instantiated
 """
 import logging
 from abc import ABC

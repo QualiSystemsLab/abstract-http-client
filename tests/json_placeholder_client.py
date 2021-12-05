@@ -1,7 +1,7 @@
-from abstract_http_client.http_clients.requests_client import AbstractRequestsClient
+from abstract_http_client.http_clients.requests_client import RequestsClient
 
 
-class JsonPlaceholderApiClient(AbstractRequestsClient):
+class JsonPlaceholderApiClient(RequestsClient):
     def __init__(self, host):
         super().__init__(host=host, use_https=True)
 

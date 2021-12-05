@@ -1,5 +1,5 @@
 """
-Abstract Base Class for rest api implementations (don't instantiate directly)
+This class can be instantiated directly, or subclassed to change signature / add methods
 """
 import logging
 
@@ -7,8 +7,8 @@ from abstract_http_client.http_clients.http_client_base import HttpClientBase
 from abstract_http_client.http_services.requests_service import RequestsService
 
 
-class AbstractRequestsClient(HttpClientBase):
-    """ Inherit from this class to start writing api client """
+class RequestsClient(HttpClientBase):
+    """ Instantiate or Inherit from this class to start writing api client """
 
     def __init__(
         self,
@@ -18,12 +18,13 @@ class AbstractRequestsClient(HttpClientBase):
         token="",
         logger: logging.Logger = None,
         port: int = None,
-        use_https=False,
-        ssl_verify=False,
+        use_https=True,
+        ssl_verify=True,
         proxies: dict = None,
+        insecure_warning=True,
     ):
         super().__init__(user, password, token, logger)
-        self._rest_service = RequestsService(host, port, logger, use_https, ssl_verify, proxies)
+        self._rest_service = RequestsService(host, port, logger, use_https, ssl_verify, proxies, insecure_warning)
 
     @property
     def rest_service(self) -> RequestsService:

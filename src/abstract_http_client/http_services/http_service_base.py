@@ -1,34 +1,24 @@
 """
-Generic implementation of working with Requests session object to make requests and validate responses
+ABC providing some common methods for http service class
+Do not instantiate directly
 """
 import logging
 from abc import ABC, abstractmethod
 from typing import List
 
 import urllib3
-
-
-def _disable_errors(exception_types: List[urllib3.exceptions.HTTPWarning]):
-    for exc_type in exception_types:
-        urllib3.disable_warnings(exc_type)
+from urllib3.exceptions import InsecureRequestWarning
 
 
 class HttpServiceBase(ABC):
-    def __init__(
-        self,
-        host: str,
-        port: int = None,
-        logger: logging.Logger = None,
-        use_https=False,
-        disabled_http_warnings: List[urllib3.exceptions.HTTPWarning] = None,
-    ):
-        """ Session object passed should be instantiated outside then passed in """
-        self._host = host
-        self._port = port
+    def __init__(self, host: str, port: int = None, logger: logging.Logger = None, use_https=True, insecure_warning=True):
+        self.host = host
+        self.port = port
         self._use_https = use_https
         self._request_counter = 0
         self._logger = logger
-        _disable_errors(disabled_http_warnings)
+        self._insecure_warning = insecure_warning
+        self._disable_insecure_warning()
 
     @property
     def request_counter(self) -> int:
@@ -44,7 +34,7 @@ class HttpServiceBase(ABC):
         Example - http://{hostname}:{port}/{uri}
         Also allows passing URI as "/endpoint" OR "endpoint"
         """
-        if self._host in uri and uri.startswith("http"):
+        if self.host in uri and uri.startswith("http"):
             return uri
 
         # support passing uri with or without "/"
@@ -52,9 +42,9 @@ class HttpServiceBase(ABC):
             uri = "/" + uri
 
         protocol = "https" if self._use_https else "http"
-        url = f"{protocol}://{self._host}"
-        if self._port:
-            url += f":{self._port}"
+        url = f"{protocol}://{self.host}"
+        if self.port:
+            url += f":{self.port}"
         url += uri
         return url
 
@@ -72,3 +62,12 @@ class HttpServiceBase(ABC):
         call after making request inside _send_request
         """
         pass
+
+    @staticmethod
+    def disable_warnings(exception_types: List[urllib3.exceptions.HTTPWarning]):
+        for exc_type in exception_types:
+            urllib3.disable_warnings(exc_type)
+
+    def _disable_insecure_warning(self):
+        if not self._insecure_warning:
+            self.disable_warnings([InsecureRequestWarning])
