@@ -1,4 +1,4 @@
-from abstract_http_client.http_clients.abstract_requests_client import AbstractRequestsClient
+from abstract_http_client.http_clients.requests_client import AbstractRequestsClient
 
 
 class JsonPlaceholderApiClient(AbstractRequestsClient):

@@ -3,4 +3,3 @@ class HttpVerbs:
     POST = "POST"
     PUT = "PUT"
     DELETE = "DELETE"
-

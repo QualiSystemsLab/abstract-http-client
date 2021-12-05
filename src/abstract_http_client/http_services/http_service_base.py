@@ -2,10 +2,10 @@
 Generic implementation of working with Requests session object to make requests and validate responses
 """
 import logging
+from abc import ABC, abstractmethod
 from typing import List
 
 import urllib3
-from abc import ABC, abstractmethod
 
 
 def _disable_errors(exception_types: List[urllib3.exceptions.HTTPWarning]):
@@ -13,14 +13,14 @@ def _disable_errors(exception_types: List[urllib3.exceptions.HTTPWarning]):
         urllib3.disable_warnings(exc_type)
 
 
-class AbstractHttpService(ABC):
+class HttpServiceBase(ABC):
     def __init__(
-            self,
-            host: str,
-            port: int = None,
-            logger: logging.Logger = None,
-            use_https=False,
-            disabled_http_warnings: List[urllib3.exceptions.HTTPWarning] = None
+        self,
+        host: str,
+        port: int = None,
+        logger: logging.Logger = None,
+        use_https=False,
+        disabled_http_warnings: List[urllib3.exceptions.HTTPWarning] = None,
     ):
         """ Session object passed should be instantiated outside then passed in """
         self._host = host
@@ -59,7 +59,7 @@ class AbstractHttpService(ABC):
         return url
 
     def _debug_log(self, message: str):
-        """ add debug level logging if passed a logger """
+        """ Add debug level logging if passed a logger """
         if self._logger:
             self._logger.debug(message)
 
@@ -67,34 +67,8 @@ class AbstractHttpService(ABC):
     @abstractmethod
     def _validate_response(response):
         """
-        receive the response, check for http errors and raise exception
+        Receive the response, check for http errors and raise exception
 
         call after making request inside _send_request
         """
-        pass
-
-    @abstractmethod
-    def _send_request(self, http_verb: str, uri: str, data: dict = None, headers: dict = None, params: dict = None):
-        """
-        Central method to build and send request
-
-        - Add debug logging
-        - Update request counter
-        """
-        pass
-
-    @abstractmethod
-    def request_get(self, uri: str):
-        pass
-
-    @abstractmethod
-    def request_post(self, uri: str, data: dict):
-        pass
-
-    @abstractmethod
-    def request_put(self, uri: str, data: dict):
-        pass
-
-    @abstractmethod
-    def request_delete(self, uri: str):
         pass
