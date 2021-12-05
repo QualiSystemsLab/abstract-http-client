@@ -5,7 +5,7 @@ from common import *
 
 
 def test_post(api_client):
-    response = api_client.add_post().json()
+    response = api_client.add_post()
     assert isinstance(response, dict)
     pretty_print_response(response)
 

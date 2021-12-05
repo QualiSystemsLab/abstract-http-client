@@ -22,27 +22,28 @@ pip install abstract-requests-client
 - Sample implementation of api client that has no auth
 
 ```python
-from abstract_requests_client.abstract_client import AbstractRequestsClient
+from abstract_http_client.http_clients.abstract_requests_client import AbstractRequestsClient
 
 
 class JsonPlaceholderApiClient(AbstractRequestsClient):
-    def __init__(self, host):
-        super().__init__(host=host, use_https=True)
+  def __init__(self, host):
+    super().__init__(host=host, use_https=True)
 
-    def get_users(self):
-        return self.rest_service.request_get(uri="/users").json()
+  def get_users(self):
+    return self.rest_service.request_get(uri="/users").json()
 
-    def get_posts(self):
-        return self.rest_service.request_get("/posts").json()
+  def get_posts(self):
+    return self.rest_service.request_get("/posts").json()
 
-    def add_post(self):
-        return self.rest_service.request_post("/posts", data={"post": "my_post"})
+  def add_post(self):
+    return self.rest_service.request_post("/posts", data={"post": "my_post"})
+
 
 if __name__ == "__main__":
-    api = JsonPlaceholderApiClient(host="jsonplaceholder.typicode.com")
-    users = api.get_users()
-    print(users)
-    print(f"total requests sent {api.rest_service.request_counter}")
+  api = JsonPlaceholderApiClient(host="jsonplaceholder.typicode.com")
+  users = api.get_users()
+  print(users)
+  print(f"total requests sent {api.rest_service.request_counter}")
 
 ```
 ### Auth Client Sample
@@ -52,33 +53,34 @@ if __name__ == "__main__":
 - Login not in __enter__ by default, can be added if prefer to have context manager trigger login. Or just put into __init__
 
 ```python
-from abstract_requests_client.abstract_client import AbstractRequestsClient
+from abstract_http_client.http_clients.abstract_requests_client import AbstractRequestsClient
 
 
 class SampleAuthClient(AbstractRequestsClient):
-    def __init__(self, host, user, password):
-        super().__init__(host=host, username=user, password=password)
-        self.login()
+  def __init__(self, host, user, password):
+    super().__init__(host=host, username=user, password=password)
+    self.login()
 
-    def login(self):
-        """  sample login - getting token and storing on requests session object """
-        data = {"user": self._username, "password": self._password}
-        self._token = self.rest_service.request_put(uri="/login")
-        self.rest_service.session.headers.update({"Authorization": self._token})
+  def login(self):
+    """  sample login - getting token and storing on requests session object """
+    data = {"user": self._username, "password": self._password}
+    self._token = self.rest_service.request_put(uri="/login")
+    self.rest_service.session.headers.update({"Authorization": self._token})
 
-    def logout(self):
-        """  sample logout - invalidationg token and clearing session auth header """
-        self.rest_service.request_delete(uri=f"/logout/{self._token}")
-        self.rest_service.session.headers.pop({"Authorization": self._token})
+  def logout(self):
+    """  sample logout - invalidationg token and clearing session auth header """
+    self.rest_service.request_delete(uri=f"/logout/{self._token}")
+    self.rest_service.session.headers.pop({"Authorization": self._token})
 
-    def get_stuff(self) -> dict:
-        return self.rest_service.request_get("/stuff").json()
+  def get_stuff(self) -> dict:
+    return self.rest_service.request_get("/stuff").json()
+
 
 if __name__ == "__main__":
-    # Context manager will handle api logout
-    with SampleAuthClient(host="192.168.1.3", user="admin", password="admin") as api:
-        stuff = api.get_stuff()
-        # Do more stuff
+  # Context manager will handle api logout
+  with SampleAuthClient(host="192.168.1.3", user="admin", password="admin") as api:
+    stuff = api.get_stuff()
+    # Do more stuff
 ```
 
 ### Base Class Parameters
@@ -89,30 +91,30 @@ if __name__ == "__main__":
 import logging
 from abc import ABC, abstractmethod
 
-from abstract_requests_client.requests_service import RequestService
+from abstract_http_client.http_services.requests_service import RequestService
 
 
 class AbstractRequestsClient(ABC):
-    """ Inherit from this class to start writing your generic api """
+  """ Inherit from this class to start writing your generic api """
 
-    @abstractmethod
-    def __init__(
-            self,
-            host,
-            username="",
-            password="",
-            token="",
-            logger: logging.Logger = None,
-            port: int = None,
-            use_https=False,
-            ssl_verify=False,
-            proxies: dict = None,
-    ):
-        self._rest_service = RequestService(host, port, logger, use_https, ssl_verify, proxies)
-        self._logger = logger
-        self._username = username
-        self._password = password
-        self._token = token
+  @abstractmethod
+  def __init__(
+          self,
+          host,
+          username="",
+          password="",
+          token="",
+          logger: logging.Logger = None,
+          port: int = None,
+          use_https=False,
+          ssl_verify=False,
+          proxies: dict = None,
+  ):
+    self._rest_service = RequestService(host, port, logger, use_https, ssl_verify, proxies)
+    self._logger = logger
+    self._username = username
+    self._password = password
+    self._token = token
 ```
 
 ## Additional Notes
