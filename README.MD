@@ -4,8 +4,17 @@
 # Abstract Http Client
 
 This project is a starting template for implementing a REST api client, with a starting template encapsulating the
-popular [requests](https://docs.python-requests.org/en/latest/) libary, and the base class building blocks for integrating other http libraries. 
+popular [requests](https://docs.python-requests.org/en/latest/) libary. Base class building blocks for integrating other http libraries also provided. 
 The motivation for this project was to skip boilerplate when working with a REST api that has no existing python implementation.
+
+
+### Basic Features
+- Setup of session object and general attributes
+- helper methods to send requests with session
+- Validation and debug logging of all requests sent
+- internal counter of requests sent
+- Context manager to manage session tokens (login / logout methods must be implemented)
+- Composable client and service classes
 
 ### Installation
 ```
@@ -77,12 +86,3 @@ if __name__ == "__main__":
     stuff = api.get_stuff()
     # Do more stuff
 ```
-
-## Additional Notes
-- Requests logic is encapsulated into requests_service and added to abstract client by composition
-- you can access the requests session directly from the requests service if needed
-- All methods run the requests, perform validation on response, then return the Response object.
-    - It's up to your use case what to do with response (response.json(), response.text, etc.)
-- Abstract class optionally expects to implement login and logout methods.
-
-
