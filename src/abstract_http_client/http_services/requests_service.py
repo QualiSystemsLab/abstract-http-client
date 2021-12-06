@@ -151,7 +151,7 @@ class RequestsService(HttpServiceBase):
         Passing 'json' parameter is in line with requests api - https://stackoverflow.com/a/26344315
         Send a file dict example - https://stackoverflow.com/a/22567429
         """
-        return self._send_request(HttpVerbs.POST, uri, data, json, headers, params, files, cookies, hooks, auth)
+        return self._send_request(HttpVerbs.POST, uri, json, data, headers, params, files, cookies, hooks, auth)
 
     def request_put(
         self,
