@@ -1,20 +1,15 @@
 [![Python 3.7](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/release/python/)
 [![pre-commit-ci](https://github.com/QualiSystemsLab/abstract-requests-client/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/QualiSystemsLab/abstract-requests-client/actions/workflows/pre-commit.yml)
 
-# Abstract Requests Client
+# Abstract Http Client
 
-This project is a starting template for a REST api wrapper class, encapsulating the
-popular [requests](https://docs.python-requests.org/en/latest/) libary. The motivation for this project was to have a
-re-usable base class when integrating a REST api without an existing python implementation.
-
-This project is an abstract base building block to inherit from and build on top of.
-
-Usage examples can be found below and in tests folder.
+This project is a starting template for implementing a REST api client, with a starting template encapsulating the
+popular [requests](https://docs.python-requests.org/en/latest/) libary, and the base class building blocks for integrating other http libraries. 
+The motivation for this project was to skip boilerplate when working with a REST api that has no existing python implementation.
 
 ### Installation
-
 ```
-pip install abstract-requests-client
+pip install abstract-http-client
 ```
 
 ### Basic Usage
@@ -58,19 +53,19 @@ from abstract_http_client.http_clients.requests_client import RequestsClient
 
 class SampleAuthClient(RequestsClient):
   def __init__(self, host, user, password):
-    super().__init__(host=host, username=user, password=password)
+    super().__init__(host=host, user=user, password=password)
     self.login()
 
   def login(self):
     """  sample login - getting token and storing on requests session object """
-    data = {"user": self._username, "password": self._password}
-    self._token = self.rest_service.request_put(uri="/login")
-    self.rest_service.session.headers.update({"Authorization": self._token})
+    data = {"user": self.user, "password": self.password}
+    self.token = self.rest_service.request_put(uri="/login", json=data)
+    self.rest_service.session.headers.update({"Authorization": self.token})
 
   def logout(self):
-    """  sample logout - invalidationg token and clearing session auth header """
-    self.rest_service.request_delete(uri=f"/logout/{self._token}")
-    self.rest_service.session.headers.pop({"Authorization": self._token})
+    """  sample logout - invalidating token and clearing session auth header """
+    self.rest_service.request_delete(uri=f"/logout/{self.token}")
+    self.rest_service.session.headers.pop({"Authorization": self.token})
 
   def get_stuff(self) -> dict:
     return self.rest_service.request_get("/stuff").json()
@@ -83,42 +78,7 @@ if __name__ == "__main__":
     # Do more stuff
 ```
 
-### Base Class Parameters
-- The full base init ships with a lot more optional parameters, as seen in the base class
-- Extensions define their own signature and pass only what is needed to super call of base
-
-```python
-import logging
-from abc import ABC, abstractmethod
-
-from abstract_http_client.http_services.requests_service import RequestService
-
-
-class AbstractRequestsClient(ABC):
-  """ Inherit from this class to start writing your generic api """
-
-  @abstractmethod
-  def __init__(
-          self,
-          host,
-          username="",
-          password="",
-          token="",
-          logger: logging.Logger = None,
-          port: int = None,
-          use_https=False,
-          ssl_verify=False,
-          proxies: dict = None,
-  ):
-    self._rest_service = RequestService(host, port, logger, use_https, ssl_verify, proxies)
-    self._logger = logger
-    self._username = username
-    self._password = password
-    self._token = token
-```
-
 ## Additional Notes
-
 - Requests logic is encapsulated into requests_service and added to abstract client by composition
 - you can access the requests session directly from the requests service if needed
 - All methods run the requests, perform validation on response, then return the Response object.
