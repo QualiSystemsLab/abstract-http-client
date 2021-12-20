@@ -4,21 +4,28 @@ Do not instantiate directly
 """
 import logging
 from abc import ABC, abstractmethod
-from typing import List
 
 import urllib3
 from urllib3.exceptions import InsecureRequestWarning
 
 
+def disable_urllib_exception(exc_type: urllib3.exceptions.HTTPWarning):
+    urllib3.disable_warnings(exc_type)
+
+
+def disable_insecure_warning():
+    disable_urllib_exception(InsecureRequestWarning)
+
+
 class HttpServiceBase(ABC):
-    def __init__(self, host: str, port: int = None, logger: logging.Logger = None, use_https=True, insecure_warning=True):
+    def __init__(self, host: str, port: int = None, logger: logging.Logger = None, use_https=True, show_insecure_warning=True):
         self.host = host
         self.port = port
         self._use_https = use_https
         self._request_counter = 0
         self._logger = logger
-        self._insecure_warning = insecure_warning
-        self._disable_insecure_warning()
+        if not show_insecure_warning:
+            disable_insecure_warning()
 
     @property
     def request_counter(self) -> int:
@@ -27,6 +34,15 @@ class HttpServiceBase(ABC):
     def _increment_request_counter(self):
         """ Track request count during session  """
         self._request_counter += 1
+
+    @abstractmethod
+    def _validate_response(self, response):
+        """
+        Receive the response, check for http errors and raise exception
+
+        call after making request inside _send_request
+        """
+        pass
 
     def _build_url(self, uri: str):
         """
@@ -48,26 +64,11 @@ class HttpServiceBase(ABC):
         url += uri
         return url
 
-    def _debug_log(self, message: str):
+    def debug_log(self, message: str):
         """ Add debug level logging if passed a logger """
         if self._logger:
             self._logger.debug(message)
 
-    @staticmethod
-    @abstractmethod
-    def _validate_response(response):
-        """
-        Receive the response, check for http errors and raise exception
-
-        call after making request inside _send_request
-        """
-        pass
-
-    @staticmethod
-    def disable_warnings(exception_types: List[urllib3.exceptions.HTTPWarning]):
-        for exc_type in exception_types:
-            urllib3.disable_warnings(exc_type)
-
-    def _disable_insecure_warning(self):
-        if not self._insecure_warning:
-            self.disable_warnings([InsecureRequestWarning])
+    def exception_log(self, message: str):
+        if self._logger:
+            self._logger.exception(message)

@@ -14,8 +14,8 @@ from typing import Tuple, Union
 from requests import Request, Response, Session
 from requests.models import HTTPBasicAuth, HTTPError
 
-from abstract_http_client.constants import HttpVerbs
 from abstract_http_client.exceptions import *
+from abstract_http_client.http_services.constants import HttpVerbs
 from abstract_http_client.http_services.http_service_base import HttpServiceBase
 
 auth_type = Union[HTTPBasicAuth, Tuple[str, str]]
@@ -42,20 +42,23 @@ class RequestsService(HttpServiceBase):
 
     def _configure_session_settings(self, proxies: dict, ssl_verify: bool):
         if proxies:
-            self._debug_log(f"Configuring proxies on session: {proxies}")
+            self.debug_log(f"Configuring proxies on session: {proxies}")
             self._session.proxies = proxies
         if ssl_verify:
-            self._debug_log(f"Configuring SSL Verify: {proxies}")
+            self.debug_log(f"Configuring SSL Verify: {proxies}")
             self._session.verify = ssl_verify
 
-    @staticmethod
-    def _validate_response(response: Response):
+    def _validate_response(self, response: Response):
         try:
             response.raise_for_status()
         except HTTPError as e:
             if response.status_code == 401:
-                raise RestClientUnauthorizedException(f"Failed Authentication. {str(e)}") from e
-            raise RestClientException(f"Failed Request. {str(e)}") from e
+                exc_msg = f"Failed Authentication. {str(e)}"
+                self.exception_log(exc_msg)
+                raise RestClientUnauthorizedException(exc_msg) from e
+            exc_msg = f"Failed Request. {str(e)}"
+            self.exception_log(exc_msg)
+            raise RestClientException(exc_msg) from e
         return response
 
     def _send_request(
@@ -79,42 +82,42 @@ class RequestsService(HttpServiceBase):
         - internal request counter incremented ahead of response validation
         - all steps of request prep logged at debug level
         """
-        self._debug_log(f"=== Prepping '{http_verb}' Request ===")
+        self.debug_log(f"=== Prepping '{http_verb}' Request ===")
         url = self._build_url(uri)
-        self._debug_log(f"Request URL: {url}")
+        self.debug_log(f"Request URL: {url}")
         req = Request(method=http_verb, url=url)
 
         # add conditional items to request
         if params:
-            self._debug_log(f"Adding params: {params}")
+            self.debug_log(f"Adding params: {params}")
             req.params = params
 
         if headers:
-            self._debug_log(f"Adding headers: {headers}")
+            self.debug_log(f"Adding headers: {headers}")
             req.headers = headers
 
         if files:
-            self._debug_log(f"Adding files payload: {files}")
+            self.debug_log(f"Adding files payload: {files}")
             req.files = files
 
         if data:
-            self._debug_log(f"Adding passed data: {data}")
+            self.debug_log(f"Adding passed data: {data}")
             req.data = data
 
         if json:
-            self._debug_log(f"Adding JSON payload: {json}")
+            self.debug_log(f"Adding JSON payload: {json}")
             req.json = json
 
         if auth:
-            self._debug_log(f"Adding auth payload: {auth}")
+            self.debug_log(f"Adding auth payload: {auth}")
             req.auth = auth
 
         if cookies:
-            self._debug_log(f"Adding cookies: {cookies}")
+            self.debug_log(f"Adding cookies: {cookies}")
             req.cookies = cookies
 
         if hooks:
-            self._debug_log(f"Adding hooks: {hooks}")
+            self.debug_log(f"Adding hooks: {hooks}")
             req.hooks = hooks
 
         # Prepare request and merge environment settings into session
@@ -164,9 +167,11 @@ class RequestsService(HttpServiceBase):
         hooks: dict = None,
         auth: auth_type = None,
     ) -> Response:
-        return self._send_request(HttpVerbs.PUT, uri, json, data, headers, params, None, cookies, hooks, auth)
+        return self._send_request(HttpVerbs.PUT, uri, json, data, headers, params, cookies=cookies, hooks=hooks, auth=auth)
 
     def request_delete(
         self, uri, headers: dict = None, params: dict = None, cookies: dict = None, hooks: dict = None, auth: auth_type = None
     ) -> Response:
-        return self._send_request(HttpVerbs.DELETE, uri, None, None, headers, params, None, cookies, hooks, auth)
+        return self._send_request(
+            HttpVerbs.DELETE, uri, headers=headers, params=params, cookies=cookies, hooks=hooks, auth=auth
+        )

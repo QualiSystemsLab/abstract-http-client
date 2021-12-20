@@ -21,10 +21,10 @@ class RequestsClient(HttpClientBase):
         use_https=True,
         ssl_verify=True,
         proxies: dict = None,
-        insecure_warning=True,
+        show_insecure_warning=True,
     ):
         super().__init__(user, password, token, logger)
-        self._rest_service = RequestsService(host, port, logger, use_https, ssl_verify, proxies, insecure_warning)
+        self._rest_service = RequestsService(host, port, logger, use_https, ssl_verify, proxies, show_insecure_warning)
 
     @property
     def rest_service(self) -> RequestsService:

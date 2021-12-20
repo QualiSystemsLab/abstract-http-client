@@ -4,7 +4,7 @@
 # Abstract Http Client
 
 This project is a starting template for implementing a REST api client, with a starting template encapsulating the
-popular [requests](https://docs.python-requests.org/en/latest/) libary. Base class building blocks for integrating other http libraries also provided. 
+popular [requests](https://docs.python-requests.org/en/latest/) library. Base class building blocks for integrating other http libraries also provided. 
 The motivation for this project was to skip boilerplate when working with a REST api that has no existing python implementation.
 
 
