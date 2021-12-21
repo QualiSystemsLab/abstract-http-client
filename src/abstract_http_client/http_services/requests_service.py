@@ -170,7 +170,13 @@ class RequestsService(HttpServiceBase):
         return self._send_request(HttpVerbs.PUT, uri, json, data, headers, params, cookies=cookies, hooks=hooks, auth=auth)
 
     def request_delete(
-        self, uri, headers: dict = None, params: dict = None, cookies: dict = None, hooks: dict = None, auth: auth_type = None
+        self,
+        uri: str,
+        headers: dict = None,
+        params: dict = None,
+        cookies: dict = None,
+        hooks: dict = None,
+        auth: auth_type = None,
     ) -> Response:
         return self._send_request(
             HttpVerbs.DELETE, uri, headers=headers, params=params, cookies=cookies, hooks=hooks, auth=auth
