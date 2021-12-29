@@ -27,7 +27,7 @@ pip install abstract-http-client
 
 ```python
 from abstract_http_client.http_clients.requests_client import RequestsClient
-
+import json
 
 class JsonPlaceholderApiClient(RequestsClient):
   def __init__(self, host):
@@ -46,7 +46,7 @@ class JsonPlaceholderApiClient(RequestsClient):
 if __name__ == "__main__":
   api = JsonPlaceholderApiClient(host="jsonplaceholder.typicode.com")
   users = api.get_users()
-  print(users)
+  print(json.dumps(users[:2], indent=4))
   print(f"total requests sent {api.rest_service.request_counter}")
 
 ```
@@ -77,12 +77,15 @@ class SampleAuthClient(RequestsClient):
     self.rest_service.session.headers.pop({"Authorization": self.token})
 
   def get_stuff(self) -> dict:
+    """ NOTE: this is pseudocode, not real endpoint """
     return self.rest_service.request_get("/stuff").json()
 
 
 if __name__ == "__main__":
   # Context manager will handle api logout
   with SampleAuthClient(host="192.168.1.3", user="admin", password="admin") as api:
+    
+    # call your api here 
     stuff = api.get_stuff()
     # Do more stuff
 ```
