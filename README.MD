@@ -3,13 +3,11 @@
 
 # Abstract Http Client
 
-This project is a starting template for implementing a REST api client, with a starting template encapsulating the
-popular [requests](https://docs.python-requests.org/en/latest/) library. Base class building blocks for integrating other http libraries also provided. 
-The motivation for this project was to skip boilerplate when working with a REST api that has no existing python implementation.
+This project is a starting template for quickly implementing a python REST api client. A concrete base class encapsulating the popular [requests](https://docs.python-requests.org/en/latest/) library is provided. Abstract base class building blocks for integrating other http libraries (such as aiohttp, etc.) are also available. The main advantage to using this base class as a starting point is to save on common boilerplate actions, which are highlighted below.
 
 
 ### Basic Features
-- Setup of session object and general attributes
+- Setup of session object and common general attributes
 - helper methods to send requests with session
 - Validation and debug logging of all requests sent
 - internal counter of requests sent

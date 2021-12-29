@@ -1,4 +1,4 @@
-name: pre-commit-pytest-ci
+name: pre-commit-lint-pytest
 
 on:
   push:
