@@ -1,5 +1,6 @@
 [![Python 3.7](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/release/python/)
-[![pre-commit-ci](https://github.com/QualiSystemsLab/abstract-requests-client/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/QualiSystemsLab/abstract-requests-client/actions/workflows/pre-commit.yml)
+[![Lint and Test](https://github.com/QualiSystemsLab/abstract-http-client/actions/workflows/lint-test.yml/badge.svg)](https://github.com/QualiSystemsLab/abstract-http-client/actions/workflows/lint-test.yml)
+
 
 # Abstract Http Client
 
