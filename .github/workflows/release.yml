@@ -21,6 +21,9 @@ jobs:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         wait-interval: 10
     
+    - name: Checkout Code
+      uses: actions/checkout@master
+    
     - name: Validate tag version - compare version.txt to tag
       run: |
         version=$(cat ./version.txt)              
@@ -36,9 +39,6 @@ jobs:
           exit 1
         fi
 
-    - name: Checkout Code
-      uses: actions/checkout@master
-    
     - name: Set up Python 3.7
       uses: actions/setup-python@v2
       with:
@@ -76,6 +76,6 @@ jobs:
     - name: Create Github Release and Upload Artifacts
       uses: softprops/action-gh-release@v1
       with:
-        files: package/dist/*
+        files: dist/*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
