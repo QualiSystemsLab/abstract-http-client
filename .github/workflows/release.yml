@@ -23,7 +23,7 @@ jobs:
     
     - name: Validate tag version - compare version.txt to tag
       run: |
-        version=$(cat version.txt)              
+        version=$(cat ./version.txt)              
         tag=${GITHUB_REF/refs\/tags\//}           
         tag="${tag:1}"                            # remove the 'v' prefix from the tag that triggered this action
         echo $version
