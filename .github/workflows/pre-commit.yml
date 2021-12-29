@@ -1,9 +1,9 @@
 name: pre-commit-pytest-ci
 
 on:
-  pull_request:
   push:
-    branches: [master]
+    branches-ignore:
+      - master
 
 jobs:
   pre-commit-lint-pytest:
@@ -16,7 +16,7 @@ jobs:
         python-version: 3.7
     - name: install ALL dependencies
       run: |
-        pip3 install -U -r requirements-dev.txt
+        pip install -U -r requirements-dev.txt
         pip install -U -r requirements.txt
         pip install .
     - name: run pre-commit linters and formatters
